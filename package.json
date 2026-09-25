@@ -1,0 +1,13 @@
+{
+  "name": "wetter-atmosphaere",
+  "version": "1.0.0",
+  "description": "Wetter-Atmosphäre mit echten Daten für Pregartsdorf",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2"
+  }
+}

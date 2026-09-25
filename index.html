@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0814">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pregartsdorf">
+<title>🎄 Pregartsdorf Winter</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow-x:hidden}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#fff;background:#0a0814;min-height:100vh;overflow-y:auto;padding-bottom:80px}
+
+  /* HIMMEL */
+  .sky{position:fixed;inset:0;z-index:0;transition:background 3s ease}
+  .sky.klar{background:linear-gradient(180deg,#0d1b2a 0%,#1a1a3a 40%,#2a1a3a 70%,#0a0814 100%)}
+  .sky.sonnig{background:linear-gradient(180deg,#ff8c42 0%,#ffb347 25%,#ffd93d 45%,#2a1a4a 100%)}
+  .sky.regen{background:linear-gradient(180deg,#1a1a2a 0%,#2a2a3a 50%,#15151f 100%)}
+  .sky.schnee{background:linear-gradient(180deg,#2a2a4a 0%,#3a3a5a 40%,#1a1a2a 100%)}
+  .sky.nebel{background:linear-gradient(180deg,#3a3a45 0%,#4a4a52 50%,#2a2a2a 100%)}
+  .sky.bewoelkt{background:linear-gradient(180deg,#1a2030 0%,#2a3040 100%)}
+  .sky.windig{background:linear-gradient(180deg,#1a2a3a 0%,#2a3a4a 50%,#15151f 100%)}
+  .sky.gewitter{background:linear-gradient(180deg,#0a0a1a 0%,#1a1025 50%,#050510 100%)}
+
+  /* BLITZ */
+  .lightning{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:15}
+  .lightning.flash{animation:flashAnim .5s}
+  @keyframes flashAnim{0%{opacity:0}10%{opacity:.9}20%{opacity:.1}30%{opacity:.7}50%{opacity:0}100%{opacity:0}}
+
+  /* WOLKEN */
+  .clouds{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 2s}
+  .clouds.active{opacity:1}
+  .cloud{position:absolute;background:radial-gradient(ellipse at 50% 60%,rgba(180,190,210,.5),rgba(140,150,180,.3) 40%,transparent 70%);border-radius:50%;filter:blur(14px);animation:cloudDrift linear infinite}
+  @keyframes cloudDrift{from{transform:translateX(-30vw)}to{transform:translateX(130vw)}}
+  .c1{width:220px;height:80px;top:8%;animation-duration:60s}
+  .c2{width:300px;height:100px;top:18%;animation-duration:80s;animation-delay:-20s}
+  .c3{width:180px;height:65px;top:28%;animation-duration:50s;animation-delay:-35s}
+  .c4{width:260px;height:90px;top:12%;animation-duration:75s;animation-delay:-50s}
+  .c5{width:200px;height:75px;top:35%;animation-duration:65s;animation-delay:-10s}
+  .c6{width:340px;height:110px;top:5%;animation-duration:90s;animation-delay:-40s}
+  .c7{width:160px;height:60px;top:22%;animation-duration:55s;animation-delay:-25s}
+
+  /* STERNE */
+  .stars{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity 2s}
+  .stars.active{opacity:.85}
+  .star{position:absolute;background:#fff;border-radius:50%;animation:twinkle 3s infinite}
+  @keyframes twinkle{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+
+  /* STERNSCHNUPPEN */
+  .meteors{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity 2s}
+  .meteors.active{opacity:1}
+  .meteor{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;box-shadow:0 0 6px 2px #fff,0 0 20px 4px rgba(255,255,200,.6);animation:meteorFall linear infinite}
+  .meteor::after{content:'';position:absolute;top:0;left:0;width:80px;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.9),transparent);transform:translateX(-80px) rotate(-45deg);transform-origin:right}
+  @keyframes meteorFall{0%{transform:translate(100vw,-10vh)}100%{transform:translate(-10vw,100vh)}}
+
+  /* SCHNEE */
+  .snow-overlay{position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 1.5s}
+  .snow-overlay.active{opacity:1}
+  .snowflake{position:absolute;top:-20px;color:#fff;animation:fallSnow linear infinite;user-select:none}
+  @keyframes fallSnow{to{transform:translateY(110vh) rotate(360deg)}}
+
+  /* REGEN */
+  .rain-overlay{position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 1.5s}
+  .rain-overlay.active{opacity:1}
+  .raindrop{position:absolute;top:-20px;width:2px;background:linear-gradient(180deg,transparent,rgba(160,200,255,.9),transparent);animation:fallRain linear infinite;border-radius:2px}
+  @keyframes fallRain{to{transform:translateY(110vh)}}
+
+  /* NEBEL */
+  .fog-overlay{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:0;transition:opacity 3s}
+  .fog-overlay.active{opacity:1}
+  .fog-layer{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(220,220,235,.25),transparent 60%);animation:fogMove 20s ease-in-out infinite}
+  .fog-layer:nth-child(2){animation-duration:35s;animation-direction:reverse;opacity:.7}
+  @keyframes fogMove{0%,100%{transform:translateX(-10%)}50%{transform:translateX(10%)}}
+
+  /* SONNE */
+  .sun{position:fixed;top:8%;right:10%;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,#fff8e0 0%,#ffd93d 30%,rgba(255,200,60,.4) 60%,transparent 75%);box-shadow:0 0 100px 50px rgba(255,210,60,.5);opacity:0;transition:opacity 2s;z-index:2;pointer-events:none}
+  .sun.active{opacity:1;animation:sunPulse 4s ease-in-out infinite}
+  @keyframes sunPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+  /* LICHTERKETTE */
+  .lights{position:fixed;top:0;left:0;right:0;height:30px;z-index:3;display:flex;justify-content:space-around;pointer-events:none;opacity:.9}
+  .bulb{width:12px;height:12px;border-radius:50%;position:relative;top:8px;animation:blink 2s infinite;box-shadow:0 0 12px 3px currentColor}
+  .bulb::before{content:'';position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:1px;height:10px;background:rgba(255,255,255,.3)}
+  .bulb:nth-child(1){background:#ff3b3b;color:#ff3b3b}
+  .bulb:nth-child(2){background:#ffd43b;color:#ffd43b;animation-delay:.2s}
+  .bulb:nth-child(3){background:#51cf66;color:#51cf66;animation-delay:.4s}
+  .bulb:nth-child(4){background:#4dabf7;color:#4dabf7;animation-delay:.6s}
+  .bulb:nth-child(5){background:#f783ac;color:#f783ac;animation-delay:.8s}
+  .bulb:nth-child(6){background:#b197fc;color:#b197fc;animation-delay:1s}
+  .bulb:nth-child(7){background:#ffd43b;color:#ffd43b;animation-delay:1.2s}
+  .bulb:nth-child(8){background:#ff3b3b;color:#ff3b3b;animation-delay:1.4s}
+  .bulb:nth-child(9){background:#51cf66;color:#51cf66;animation-delay:1.6s}
+  .bulb:nth-child(10){background:#4dabf7;color:#4dabf7;animation-delay:1.8s}
+  @keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+
+  /* CONTENT */
+  .container{position:relative;z-index:10;max-width:640px;margin:0 auto;padding:70px 20px 40px}
+  .ort{text-align:center;font-size:.85rem;letter-spacing:5px;opacity:.65;margin-bottom:6px;font-weight:800;text-transform:uppercase}
+  .ort-time{text-align:center;font-size:.75rem;letter-spacing:2px;opacity:.4;margin-bottom:32px;font-weight:600}
+
+  .weather-card,.countdown-card,.card,.stat,.tabs,.modal{backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+
+  .weather-card{background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.12);border-radius:32px;padding:36px 24px;text-align:center;margin-bottom:20px;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:fadeUp .8s ease}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .weather-emoji{font-size:4.5rem;margin-bottom:8px;animation:float 3s ease-in-out infinite;display:inline-block}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .temp{font-size:5.5rem;font-weight:900;line-height:1;letter-spacing:-4px;background:linear-gradient(180deg,#fff,#a5d8ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .temp small{font-size:2rem;opacity:.7;letter-spacing:0;font-weight:800}
+  .weather-text{font-size:1.1rem;opacity:.85;margin-top:8px;font-weight:700;letter-spacing:1px}
+
+  .countdown-card{background:linear-gradient(135deg,rgba(200,16,46,.15),rgba(255,59,59,.05));border:1px solid rgba(255,100,100,.2);border-radius:32px;padding:28px 20px;text-align:center;margin-bottom:20px;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:fadeUp 1s ease}
+  .countdown-title{font-size:.75rem;letter-spacing:4px;opacity:.7;font-weight:800;text-transform:uppercase;margin-bottom:6px}
+  .countdown-fest{font-size:1.6rem;font-weight:900;margin-bottom:20px;color:#ffb3b3}
+  .countdown-fest .fest-emoji{font-size:2rem;margin-right:8px;display:inline-block;animation:bounce 2s infinite}
+  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .countdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:420px;margin:0 auto}
+  .cd-cell{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:14px 4px}
+  .cd-num{font-size:1.8rem;font-weight:900;line-height:1;color:#fff}
+  .cd-lbl{font-size:.6rem;letter-spacing:2px;opacity:.6;margin-top:6px;text-transform:uppercase;font-weight:800}
+
+  .tabs{display:flex;gap:6px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);padding:5px;border-radius:16px;margin-bottom:20px;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{flex:1;min-width:70px;background:transparent;border:none;color:#fff;padding:11px 8px;border-radius:12px;cursor:pointer;font-weight:800;font-size:.7rem;white-space:nowrap;font-family:inherit}
+  .tabs button.active{background:linear-gradient(135deg,#c8102e,#ff3b3b);box-shadow:0 6px 20px rgba(200,16,46,.5)}
+  .tab-content{display:none}
+  .tab-content.active{display:block}
+
+  .card{background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:20px;margin-bottom:16px;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+  .card h3{font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:#67e8f9;font-weight:900;margin-bottom:16px}
+
+  /* ADVENTSKALENDER */
+  .advents-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+  @media (max-width:520px){.advents-grid{grid-template-columns:repeat(4,1fr)}}
+  .advents-door{aspect-ratio:1;border-radius:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;position:relative;user-select:none;background:linear-gradient(135deg,rgba(200,16,46,.3),rgba(120,10,30,.5));border:1px solid rgba(255,100,100,.3);transition:transform .2s}
+  .advents-door:hover{transform:translateY(-4px) scale(1.03);border-color:#ff3b3b}
+  .advents-door .door-num{font-size:1.4rem;color:#fff}
+  .advents-door .door-icon{font-size:1.2rem;margin-bottom:2px}
+  .advents-door.opened{background:linear-gradient(135deg,#2e8b57,#51cf66);border-color:#51cf66}
+  .advents-door.locked{opacity:.35;cursor:not-allowed}
+
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+  .stat{background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px 8px;text-align:center}
+  .stat .num{font-size:1.5rem;font-weight:900;color:#67e8f9;line-height:1}
+  .stat .lbl{font-size:.6rem;opacity:.6;margin-top:6px;text-transform:uppercase;font-weight:800}
+
+  /* KALENDER */
+  .cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .cal-header h2{font-size:1.05rem;font-weight:900}
+  .cal-header button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;padding:8px 14px;border-radius:12px;cursor:pointer;font-weight:800;font-family:inherit}
+  .weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px}
+  .weekdays div{text-align:center;font-size:.65rem;opacity:.5;font-weight:800;text-transform:uppercase}
+  .cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+  .cal-day{aspect-ratio:1;background:rgba(255,255,255,.04);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.85rem;border:1px solid rgba(255,255,255,.06);font-weight:700;cursor:pointer}
+  .cal-day.today{border:2px solid #67e8f9}
+  .cal-day.has-event{background:linear-gradient(135deg,#c8102e,#ff3b3b);color:#fff}
+  .cal-day.other-month{opacity:.2}
+
+  /* FESTE */
+  .fest-item{display:flex;gap:12px;padding:14px;background:rgba(255,255,255,.04);border-radius:14px;margin-bottom:8px;border:1px solid rgba(255,255,255,.06);align-items:center;cursor:pointer;transition:all .2s}
+  .fest-item:hover{border-color:rgba(103,232,249,.4);transform:translateX(4px)}
+  .fi-emoji{font-size:1.8rem}
+  .fi-info{flex:1}
+  .fi-name{font-weight:800;font-size:.95rem;margin-bottom:2px}
+  .fi-date{font-size:.72rem;opacity:.55}
+  .fi-days{font-size:1rem;font-weight:900;color:#67e8f9;text-align:right}
+  .fi-days small{display:block;font-size:.6rem;opacity:.6;font-weight:700}
+  .fi-del{background:transparent;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:1rem;padding:4px 8px;border-radius:8px}
+  .fi-del:hover{color:#ff6b6b}
+
+  /* REZEPTE */
+  .rezepte-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+  .rezept-card{background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .25s}
+  .rezept-card:hover{transform:translateY(-4px);border-color:#67e8f9;box-shadow:0 12px 32px rgba(103,232,249,.2)}
+  .rezept-card .r-emoji{font-size:2.5rem;margin-bottom:8px;display:block}
+  .rezept-card .r-name{font-weight:800;font-size:.85rem;line-height:1.3}
+  .rezept-card .r-time{font-size:.65rem;opacity:.6;margin-top:4px}
+
+  .rezept-header{text-align:center;margin-bottom:20px}
+  .rezept-header .rh-emoji{font-size:4rem;display:block;margin-bottom:8px}
+  .rezept-header .rh-name{font-size:1.4rem;font-weight:900;color:#ffb3b3;margin-bottom:4px}
+  .rezept-header .rh-meta{font-size:.8rem;opacity:.6}
+  .rezept-section{margin-bottom:18px;text-align:left}
+  .rezept-section h4{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:#67e8f9;font-weight:900;margin-bottom:10px}
+  .rezept-section ul{list-style:none;padding:0}
+  .rezept-section ul li{padding:6px 0 6px 20px;position:relative;font-size:.9rem;line-height:1.5}
+  .rezept-section ul li::before{content:'•';position:absolute;left:6px;color:#ff3b3b;font-weight:900}
+  .rezept-section ol{padding-left:24px}
+  .rezept-section ol li{padding:6px 0;font-size:.9rem;line-height:1.5}
+  .rezept-section p{font-size:.9rem;line-height:1.5;opacity:.8}
+
+  /* FORM */
+  .form-group{margin-bottom:14px}
+  .form-group label{display:block;font-size:.7rem;font-weight:800;margin-bottom:6px;color:rgba(255,255,255,.6);text-transform:uppercase}
+  .form-group input,.form-group select{width:100%;padding:12px 14px;background:rgba(0,0,0,.35);border:2px solid rgba(255,255,255,.1);border-radius:12px;color:#fff;font-size:.9rem;font-family:inherit}
+  .form-group input:focus,.form-group select:focus{outline:none;border-color:#67e8f9}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+  .emoji-picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:6px;margin-top:6px}
+  .emoji-picker button{background:rgba(0,0,0,.35);border:2px solid rgba(255,255,255,.1);font-size:1.3rem;aspect-ratio:1;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit}
+  .emoji-picker button.active{border-color:#67e8f9;background:rgba(103,232,249,.2)}
+
+  /* THEME-BUTTONS */
+  .theme-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .theme-btn{background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.1);border-radius:14px;padding:12px 6px;cursor:pointer;text-align:center;transition:all .2s;font-family:inherit;color:#fff}
+  .theme-btn:hover{transform:translateY(-2px)}
+  .theme-btn.active{border-color:#67e8f9;background:rgba(103,232,249,.15)}
+  .theme-btn .t-emoji{font-size:1.6rem;display:block;margin-bottom:4px}
+  .theme-btn .t-name{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:flex-start;justify-content:center;z-index:1000;padding:20px;overflow-y:auto}
+  .modal-overlay.active{display:flex}
+  .modal{background:linear-gradient(135deg,rgba(30,20,40,.98),rgba(20,15,30,.98));border:1px solid rgba(255,255,255,.15);border-radius:28px;padding:28px;max-width:480px;width:100%;text-align:center;margin:auto}
+  .modal-emoji{font-size:5rem;margin-bottom:12px}
+  .modal-title{font-size:1.3rem;font-weight:900;margin-bottom:10px;color:#ffb3b3}
+  .modal-text{font-size:.95rem;opacity:.8;line-height:1.6;margin-bottom:20px}
+
+  .btn{background:linear-gradient(135deg,#c8102e,#ff3b3b);color:#fff;border:none;border-radius:14px;padding:14px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;width:100%;transition:all .2s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn.secondary{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15)}
+
+  .fab{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#67e8f9,#4dabf7);color:#0a0814;border:none;font-size:1.8rem;cursor:pointer;z-index:100;display:flex;align-items:center;justify-content:center;font-weight:900;transition:all .3s}
+  .fab:hover{transform:scale(1.1) rotate(90deg)}
+  .music-btn{position:fixed;bottom:24px;left:24px;width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:1.4rem;cursor:pointer;z-index:100;display:flex;align-items:center;justify-content:center;transition:all .3s}
+  .music-btn.playing{background:linear-gradient(135deg,#c8102e,#ff3b3b);animation:pulseBtn 1.5s infinite}
+  @keyframes pulseBtn{0%,100%{box-shadow:0 0 0 0 rgba(200,16,46,.7)}50%{box-shadow:0 0 0 12px rgba(200,16,46,0)}}
+  .refresh{position:fixed;bottom:24px;left:88px;width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:1.4rem;cursor:pointer;z-index:100;display:flex;align-items:center;justify-content:center;transition:all .4s}
+  .refresh:hover{transform:scale(1.1) rotate(180deg)}
+
+  .loading{position:fixed;inset:0;background:#0a0814;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .6s}
+  .loading.hide{opacity:0;pointer-events:none}
+  .loading-spinner{width:50px;height:50px;border:3px solid rgba(255,255,255,.1);border-top-color:#67e8f9;border-radius:50%;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .snow-ground{position:fixed;bottom:0;left:0;right:0;height:120px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.15));pointer-events:none;z-index:3;opacity:0;transition:opacity 2s}
+  .snow-ground.active{opacity:1}
+
+  @media (max-width:520px){
+    .temp{font-size:4rem}.temp small{font-size:1.5rem}
+    .weather-emoji{font-size:3.5rem}
+    .countdown-fest{font-size:1.2rem}
+    .cd-num{font-size:1.4rem}
+    .container{padding:60px 14px 40px}
+    .theme-row{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+
+<div class="loading" id="loading"><div class="loading-spinner"></div></div>
+<div class="sky klar" id="sky"></div>
+<div class="lightning" id="lightning"></div>
+
+<div class="clouds" id="clouds">
+  <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+  <div class="cloud c4"></div><div class="cloud c5"></div><div class="cloud c6"></div><div class="cloud c7"></div>
+</div>
+
+<div class="stars" id="stars"></div>
+<div class="meteors" id="meteors"></div>
+<div class="lights" id="lights"></div>
+<div class="snow-overlay" id="snow"></div>
+<div class="rain-overlay" id="rain"></div>
+<div class="fog-overlay" id="fog"><div class="fog-layer"></div><div class="fog-layer"></div></div>
+<div class="sun" id="sun"></div>
+<div class="snow-ground" id="snow-ground"></div>
+
+<div class="container">
+  <div class="ort">📍 Pregartsdorf</div>
+  <div class="ort-time" id="uhrzeit">--:--</div>
+
+  <div class="weather-card">
+    <div class="weather-emoji" id="weather-emoji">⏳</div>
+    <div class="temp" id="temp">--<small>°C</small></div>
+    <div class="weather-text" id="weather-text">Lade Wetter...</div>
+  </div>
+
+  <div class="countdown-card">
+    <div class="countdown-title">Countdown</div>
+    <div class="countdown-fest" id="cd-fest"><span class="fest-emoji">🎄</span>Weihnachten</div>
+    <div class="countdown-grid">
+      <div class="cd-cell"><div class="cd-num" id="cd-days">--</div><div class="cd-lbl">Tage</div></div>
+      <div class="cd-cell"><div class="cd-num" id="cd-hours">--</div><div class="cd-lbl">Std</div></div>
+      <div class="cd-cell"><div class="cd-num" id="cd-mins">--</div><div class="cd-lbl">Min</div></div>
+      <div class="cd-cell"><div class="cd-num" id="cd-secs">--</div><div class="cd-lbl">Sek</div></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="active" data-tab="advents">🎁 Advent</button>
+    <button data-tab="rezepte">🍪 Rezepte</button>
+    <button data-tab="calendar">📅 Kalender</button>
+    <button data-tab="feste">🎊 Feste</button>
+    <button data-tab="theme">🎨 Theme</button>
+    <button data-tab="neu">➕ Neu</button>
+  </div>
+
+  <!-- ADVENT -->
+  <div class="tab-content active" id="tab-advents">
+    <div class="stats">
+      <div class="stat"><div class="num" id="stat-opened">0</div><div class="lbl">Offen</div></div>
+      <div class="stat"><div class="num" id="stat-left">24</div><div class="lbl">Übrig</div></div>
+      <div class="stat"><div class="num" id="stat-days-xmas">0</div><div class="lbl">Tage bis 🎄</div></div>
+    </div>
+    <div class="card"><h3>🎁 Adventskalender</h3><div class="advents-grid" id="advents-grid"></div></div>
+  </div>
+
+  <!-- REZEPTE -->
+  <div class="tab-content" id="tab-rezepte">
+    <div class="card">
+      <h3>🍪 Weihnachts-Rezepte</h3>
+      <div class="rezepte-grid" id="rezepte-grid"></div>
+    </div>
+  </div>
+
+  <!-- KALENDER -->
+  <div class="tab-content" id="tab-calendar">
+    <div class="card">
+      <div class="cal-header">
+        <button id="cal-prev">←</button>
+        <h2 id="cal-month">--</h2>
+        <button id="cal-next">→</button>
+      </div>
+      <div class="weekdays"><div>Mo</div><div>Di</div><div>Mi</div><div>Do</div><div>Fr</div><div>Sa</div><div>So</div></div>
+      <div class="cal-days" id="cal-days"></div>
+    </div>
+  </div>
+
+  <!-- FESTE -->
+  <div class="tab-content" id="tab-feste">
+    <div class="card"><h3>🎊 Alle Feste</h3><div id="feste-list"></div></div>
+  </div>
+
+  <!-- THEME -->
+  <div class="tab-content" id="tab-theme">
+    <div class="card">
+      <h3>🎨 Theme wechseln</h3>
+      <div class="theme-row">
+        <button class="theme-btn active" data-theme="xmas"><span class="t-emoji">🎄</span><span class="t-name">Weihnachten</span></button>
+        <button class="theme-btn" data-theme="silvester"><span class="t-emoji">🎆</span><span class="t-name">Silvester</span></button>
+        <button class="theme-btn" data-theme="neujahr"><span class="t-emoji">🎊</span><span class="t-name">Neujahr</span></button>
+        <button class="theme-btn" data-theme="geburtstag"><span class="t-emoji">🎂</span><span class="t-name">Geburtstag</span></button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🔔 Erinnerungen</h3>
+      <p style="font-size:.85rem;opacity:.7;line-height:1.6;margin-bottom:14px">Am Festtag bekommst du eine Benachrichtigung.</p>
+      <button class="btn" id="notif-btn" style="margin-bottom:10px">🔔 Benachrichtigung erlauben</button>
+      <button class="btn secondary" id="notif-test">📢 Test</button>
+      <p style="font-size:.75rem;opacity:.5;margin-top:10px" id="notif-status"></p>
+    </div>
+  </div>
+
+  <!-- NEU -->
+  <div class="tab-content" id="tab-neu">
+    <div class="card">
+      <h3>➕ Eigenes Fest hinzufügen</h3>
+      <div class="form-group"><label>Emoji</label><div class="emoji-picker" id="emoji-picker"></div></div>
+      <div class="form-group"><label>Name *</label><input type="text" id="f-name" placeholder="z.B. Ostern"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Tag</label><input type="number" id="f-day" min="1" max="31" placeholder="23"></div>
+        <div class="form-group"><label>Monat</label><select id="f-month">
+          <option value="1">Januar</option><option value="2">Februar</option><option value="3">März</option>
+          <option value="4">April</option><option value="5">Mai</option><option value="6">Juni</option>
+          <option value="7">Juli</option><option value="8">August</option><option value="9">September</option>
+          <option value="10">Oktober</option><option value="11">November</option><option value="12">Dezember</option>
+        </select></div>
+      </div>
+      <div class="form-group"><label>Glückwunsch-Text</label><input type="text" id="f-msg" placeholder="z.B. Frohe Ostern!"></div>
+      <button class="btn" id="f-save">💾 Fest hinzufügen</button>
+    </div>
+  </div>
+</div>
+
+<button class="music-btn" id="music-btn" title="Musik">🎵</button>
+<button class="refresh" id="refresh" title="Neu laden">🔄</button>
+<button class="fab" id="fab" title="Neues Fest">+</button>
+
+<div class="modal-overlay" id="modal"><div class="modal" id="modal-content"></div></div>
+
+<script>
+// ============================================================
+// REZEPTE
+// ============================================================
+const REZEPTE = [
+  {
+    id:'vanillekipferl', emoji:'🥐', name:'Vanillekipferl', time:'45 Min', personen:'~60 Stück',
+    zutaten:['250 g Mehl','200 g Butter (kalt)','100 g gemahlene Mandeln','70 g Zucker','2 Eigelb','1 Päckchen Vanillezucker','Puderzucker + Vanillezucker zum Wälzen'],
+    schritte:['Mehl, Butter, Mandeln, Zucker, Eigelb und Vanillezucker zu einem glatten Teig verkneten.','Teig 1 Stunde im Kühlschrank ruhen lassen.','Backofen auf 180°C Ober-/Unterhitze vorheizen.','Kleine Hörnchen formen (ca. 5 cm lang).','Auf Backblech legen und 10–12 Min goldbraun backen.','Noch warm in Puderzucker-Vanille-Zucker wälzen.','Auskühlen lassen und in Blechdose aufbewahren.']
+  },
+  {
+    id:'spritzgebaeck', emoji:'🍪', name:'Spritzgebäck', time:'40 Min', personen:'~80 Stück',
+    zutaten:['250 g Butter','150 g Zucker','1 Ei','1 Päckchen Vanillezucker','400 g Mehl','1 TL Backpulver','Schokolade zum Verzieren'],
+    schritte:['Butter mit Zucker cremig rühren.','Ei und Vanillezucker unterrühren.','Mehl und Backpulver mischen, unterkneten.','Teig in Spritzbeutel mit Sterntülle füllen.','S-Formen oder Ringe auf Backblech spritzen.','Bei 180°C ca. 10–12 Min backen.','Nach dem Abkühlen in Schokolade tauchen.']
+  },
+  {
+    id:'stollen', emoji:'🍰', name:'Christstollen', time:'3 Std', personen:'1 Stollen',
+    zutaten:['500 g Mehl','1 Würfel Hefe','200 ml lauwarme Milch','100 g Zucker','250 g Butter','200 g Rosinen','100 g Zitronat','100 g Orangeat','100 g Mandeln','1 TL Zimt','Puderzucker'],
+    schritte:['Hefe in lauwarmer Milch auflösen.','Mit Mehl, Zucker und Butter zu einem Teig kneten.','Rosinen, Zitronat, Orangeat, Mandeln und Zimt unterkneten.','Teig 1 Stunde gehen lassen.','Zu einem Stollen formen, in der Mitte eine Kerbe.','Bei 160°C ca. 60 Min backen.','Noch warm mit zerlassener Butter bestreichen und dick mit Puderzucker bestreuen.']
+  },
+  {
+    id:'gluehwein', emoji:'🍷', name:'Glühwein', time:'20 Min', personen:'4 Gläser',
+    zutaten:['1 L Rotwein (trocken)','1 Orange','1 Zitrone','2 Zimtstangen','3 Nelken','2 Sternanis','4 EL Zucker','1 Prise Muskat'],
+    schritte:['Wein in einen Topf geben.','Orange und Zitrone in Scheiben schneiden, dazugeben.','Gewürze und Zucker hinzufügen.','Bei niedriger Hitze erwärmen – NICHT kochen!','Ca. 15 Min ziehen lassen.','Durch ein Sieb gießen und heiß servieren.']
+  },
+  {
+    id:'lebkuchen', emoji:'🍫', name:'Lebkuchen', time:'1,5 Std', personen:'~30 Stück',
+    zutaten:['250 g Honig','100 g Zucker','100 g Butter','500 g Mehl','2 Eier','1 Päckchen Lebkuchengewürz','1 TL Backpulver','100 g gemahlene Nüsse','Zuckerglasur'],
+    schritte:['Honig, Zucker und Butter schmelzen, abkühlen lassen.','Mit Mehl, Eiern, Gewürz, Backpulver und Nüssen verkneten.','Teig 1 Stunde ruhen lassen.','Dünn ausrollen und Formen ausstechen.','Bei 180°C ca. 12–15 Min backen.','Abkühlen lassen und mit Zuckerglasur verzieren.']
+  },
+  {
+    id:'apfelstrudel', emoji:'🥧', name:'Apfelstrudel', time:'1,5 Std', personen:'1 Strudel',
+    zutaten:['250 g Mehl','1 Ei','100 ml Wasser','1 Prise Salz','1 kg Äpfel','100 g Zucker','1 TL Zimt','50 g Rosinen','50 g Semmelbrösel','100 g Butter'],
+    schritte:['Mehl, Ei, Wasser und Salz zu einem glatten Teig kneten.','Teig 30 Min ruhen lassen.','Äpfel schälen, in Scheiben schneiden, mit Zucker und Zimt mischen.','Semmelbrösel in Butter goldbraun rösten.','Teig dünn ausziehen, Brösel und Äpfel drauf, einrollen.','Bei 180°C ca. 45 Min backen.','Mit Puderzucker bestreuen.']
+  },
+  {
+    id:'punsch', emoji:'🍵', name:'Kinderpunsch', time:'15 Min', personen:'4 Tassen',
+    zutaten:['1 L Apfelsaft','200 ml Orangensaft','2 Zimtstangen','3 Nelken','1 Sternanis','1 Bio-Orange','2 EL Honig'],
+    schritte:['Alle Säfte in einen Topf geben.','Orange in Scheiben schneiden, dazugeben.','Gewürze hinzufügen.','Bei mittlerer Hitze erwärmen (nicht kochen).','Ca. 10 Min ziehen lassen.','Honig einrühren, abseihen und heiß servieren.']
+  },
+  {
+    id:'kokosmakronen', emoji:'🥥', name:'Kokosmakronen', time:'35 Min', personen:'~25 Stück',
+    zutaten:['4 Eiweiß','200 g Zucker','1 Päckchen Vanillezucker','250 g Kokosraspeln','1 Prise Salz','Schokolade zum Verzieren'],
+    schritte:['Eiweiß steif schlagen.','Zucker und Vanillezucker langsam einrieseln lassen.','Kokosraspeln unterheben.','Kleine Häufchen auf Backblech setzen.','Bei 160°C ca. 15–18 Min backen.','Nach dem Abkühlen die Unterseite in Schokolade tauchen.']
+  },
+  {
+    id:'zimtsterne', emoji:'⭐', name:'Zimtsterne', time:'1 Std', personen:'~40 Stück',
+    zutaten:['3 Eiweiß','250 g Puderzucker','1 TL Zimt','400 g gemahlene Mandeln','1 Prise Salz','Zuckerglasur'],
+    schritte:['Eiweiß steif schlagen, Puderzucker langsam einrieseln.','Etwas Eiweiß für Glasur beiseite stellen.','Zimt und Mandeln unterheben.','Teig ausrollen (ca. 1 cm dick).','Sterne ausstechen und mit Eiweißglasur bestreichen.','Bei 140°C ca. 20 Min trocknen lassen.']
+  },
+  {
+    id:'brownies', emoji:'🍫', name:'Schoko-Brownies', time:'50 Min', personen:'12 Stück',
+    zutaten:['200 g Zartbitterschokolade','150 g Butter','200 g Zucker','3 Eier','100 g Mehl','1 TL Backpulver','1 Prise Salz','50 g Walnüsse'],
+    schritte:['Schokolade und Butter schmelzen.','Zucker und Eier schaumig schlagen.','Schoko-Butter-Mischung unterrühren.','Mehl, Backpulver und Salz unterheben.','Walnüsse unterheben.','In Form geben und bei 180°C ca. 25 Min backen.','In Quadrate schneiden.']
+  }
+];
+
+// ============================================================
+// FESTE
+// ============================================================
+const DEFAULT_FESTE = [
+  { id:'xmas', emoji:'🎄', name:'Weihnachten', month:12, day:24 },
+  { id:'xmas25', emoji:'🎅', name:'1. Weihnachtstag', month:12, day:25 },
+  { id:'silvester', emoji:'🎆', name:'Silvester', month:12, day:31 },
+  { id:'neujahr', emoji:'🎊', name:'Neujahr', month:1, day:1 },
+  { id:'geburtstag', emoji:'🎂', name:'Geburtstag', month:11, day:23 }
+];
+
+const ADVENTS_MESSAGES = [
+  '🎄 Genieß die Vorweihnachtszeit!','☕ Trink einen heißen Kakao.','🎵 Hör Weihnachtsmusik.',
+  '🍪 Back Plätzchen.','❄️ Schau aus dem Fenster.','🕯️ Zünde eine Kerze an.',
+  '🎁 Denk an jemanden, den du magst.','📖 Lies eine Weihnachtsgeschichte.','🧦 Häng einen Strumpf auf.',
+  '🌟 Genieß die Lichter.','🎅 Schreib einen Wunschzettel.','⛄ Bau einen Schneemann.',
+  '🍊 Iss eine Mandarine.','🎶 Sing ein Weihnachtslied.','🦌 Denk an die Rentiere.',
+  '🎁 Verpack ein Geschenk.','🍷 Trink Glühwein.','🔔 Klingelingeling.',
+  '🌟 Streu Glitzer.','🎄 Dekorier den Baum.','🍽️ Plan das Festessen.',
+  '📸 Mach ein Foto.','❤️ Sag jemandem Danke.','🎉 Morgen ist Heiligabend!'
+];
+
+const FEST_EMOJIS = ['🎉','🎄','🎅','🎆','🎊','🎂','🎃','🐰','💘','🍀','🦃','🌷','☀️','🎓','💍','🌟','🍁','❄️','🕯️','🥳'];
+
+// ============================================================
+// STATE
+// ============================================================
+let feste = JSON.parse(localStorage.getItem('winter_feste') || '[]');
+if (feste.length === 0) { feste = DEFAULT_FESTE.slice(); localStorage.setItem('winter_feste', JSON.stringify(feste)); }
+let currentFestId = localStorage.getItem('winter_current_fest') || 'xmas';
+let openedDoors = JSON.parse(localStorage.getItem('winter_doors') || '[]');
+let calMonth = new Date().getMonth();
+let calYear = new Date().getFullYear();
+let pickedFestEmoji = '🎉';
+let musicPlaying = false;
+let audioCtx = null;
+let musicTimer = null;
+let lightningInterval = null;
+let meteorInterval = null;
+
+const $ = (id) => document.getElementById(id);
+
+// ============================================================
+// HELPERS
+// ============================================================
+function saveFeste() { localStorage.setItem('winter_feste', JSON.stringify(feste)); }
+function saveDoors() { localStorage.setItem('winter_doors', JSON.stringify(openedDoors)); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function getFest(id) { return feste.find(f => f.id === id); }
+
+function getNextOccurrence(fest) {
+  const now = new Date(); now.setHours(0,0,0,0);
+  let year = now.getFullYear();
+  let date = new Date(year, fest.month - 1, fest.day);
+  if (date < now) { year++; date = new Date(year, fest.month - 1, fest.day); }
+  return date;
+}
+function daysUntil(fest) {
+  const now = new Date(); now.setHours(0,0,0,0);
+  return Math.ceil((getNextOccurrence(fest) - now) / 86400000);
+}
+function festDateText(f) {
+  const months = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  return f.day + '. ' + months[f.month-1];
+}
+
+// ============================================================
+// UHRZEIT
+// ============================================================
+function updateUhrzeit() {
+  const now = new Date();
+  $('uhrzeit').textContent = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+}
+updateUhrzeit();
+setInterval(updateUhrzeit, 30000);
+
+// ============================================================
+// STERNE + LICHTER
+// ============================================================
+function createStars() {
+  const stars = $('stars'); stars.innerHTML = '';
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.top = Math.random() * 70 + 'vh';
+    const size = 1 + Math.random() * 2;
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.animationDelay = Math.random() * 3 + 's';
+    stars.appendChild(s);
+  }
+}
+
+function createLights() {
+  const lights = $('lights'); lights.innerHTML = '';
+  for (let i = 0; i < 10; i++) {
+    const b = document.createElement('div');
+    b.className = 'bulb';
+    lights.appendChild(b);
+  }
+}
+
+// ============================================================
+// STERNSCHNUPPEN
+// ============================================================
+function startMeteors() {
+  const meteors = $('meteors');
+  meteors.classList.add('active');
+  function spawnMeteor() {
+    if (!meteors.classList.contains('active')) return;
+    const m = document.createElement('div');
+    m.className = 'meteor';
+    m.style.left = Math.random() * 60 + 'vw';
+    m.style.top = Math.random() * 30 + 'vh';
+    m.style.animationDuration = (1 + Math.random() * 1.5) + 's';
+    meteors.appendChild(m);
+    setTimeout(() => m.remove(), 3000);
+  }
+  meteorInterval = setInterval(spawnMeteor, 4000 + Math.random() * 6000);
+  spawnMeteor();
+}
+
+function stopMeteors() {
+  clearInterval(meteorInterval);
+  $('meteors').classList.remove('active');
+  $('meteors').innerHTML = '';
+}
+
+// ============================================================
+// MUSIK (Weihnachtsmelodie)
+// ============================================================
+const MUSIC_NOTES = [
+  523.25,523.25,587.33,523.25,698.46,659.25,523.25,523.25,587.33,523.25,783.99,698.46,
+  523.25,523.25,1046.50,880.00,698.46,659.25,587.33,932.33,932.33,880.00,698.46,783.99,698.46
+];
+
+function playMusicLoop() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    let noteIndex = 0;
+    let time = audioCtx.currentTime + 0.1;
+    function scheduleNext() {
+      if (!musicPlaying) return;
+      const freq = MUSIC_NOTES[noteIndex];
+      const dur = freq > 700 ? 0.4 : 0.35;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, time);
+      gain.gain.linearRampToValueAtTime(0.06, time + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(time);
+      osc.stop(time + dur);
+      time += dur + 0.05;
+      noteIndex = (noteIndex + 1) % MUSIC_NOTES.length;
+      musicTimer = setTimeout(scheduleNext, dur * 1000 + 50);
+    }
+    scheduleNext();
+  } catch (e) { console.error('Musik:', e); }
+}
+
+function toggleMusic() {
+  const btn = $('music-btn');
+  if (musicPlaying) {
+    musicPlaying = false;
+    clearTimeout(musicTimer);
+    btn.classList.remove('playing');
+    btn.textContent = '🎵';
+    showToast('🔇 Musik aus');
+  } else {
+    musicPlaying = true;
+    playMusicLoop();
+    btn.classList.add('playing');
+    btn.textContent = '🔊';
+    showToast('🎵 Musik an');
+  }
+}
+
+// ============================================================
+// WETTER
+// ============================================================
+async function loadWeather() {
+  try {
+    const res = await fetch('/api/wetter');
+    const data = await res.json();
+    if (!data.erfolg) { $('weather-text').textContent = 'Wetter nicht verfügbar'; return; }
+    let anzeigeTemp = data.temperatur;
+    if (data.temperatur >= 0) anzeigeTemp = -1 - Math.random() * 2;
+    $('temp').innerHTML = anzeigeTemp.toFixed(1) + '<small>°C</small>';
+    const code = data.wetterCode;
+    const sky = $('sky'), rain = $('rain'), snow = $('snow'), fog = $('fog');
+    const sun = $('sun'), snowGround = $('snow-ground'), stars = $('stars'), clouds = $('clouds');
+
+    rain.classList.remove('active'); snow.classList.remove('active'); fog.classList.remove('active');
+    sun.classList.remove('active'); snowGround.classList.remove('active'); stars.classList.remove('active');
+    clouds.classList.remove('active'); sky.className = 'sky';
+    clearInterval(lightningInterval);
+    stopMeteors();
+
+    let emoji = '☁️', text = 'Bewölkt';
+
+    if (code === 'regen') { sky.classList.add('regen'); rain.classList.add('active'); clouds.classList.add('active'); createRain(90); emoji = '🌧️'; text = 'Regen'; }
+    else if (code === 'schnee') { sky.classList.add('schnee'); snow.classList.add('active'); snowGround.classList.add('active'); clouds.classList.add('active'); createSnow(70); emoji = '❄️'; text = 'Schneefall'; }
+    else if (code === 'nebel') { sky.classList.add('nebel'); fog.classList.add('active'); clouds.classList.add('active'); emoji = '🌫️'; text = 'Neblig'; }
+    else if (code === 'sonnig') { sky.classList.add('sonnig'); sun.classList.add('active'); emoji = '☀️'; text = 'Sonnig'; }
+    else if (code === 'windig') { sky.classList.add('windig'); clouds.classList.add('active'); emoji = '💨'; text = 'Windig'; }
+    else if (code === 'gewitter') { sky.classList.add('gewitter'); rain.classList.add('active'); clouds.classList.add('active'); createRain(120); emoji = '⛈️'; text = 'Gewitter'; startLightning(); }
+    else if (code === 'klar') { sky.classList.add('klar'); stars.classList.add('active'); emoji = '✨'; text = 'Klarer Himmel'; startMeteors(); }
+    else { sky.classList.add('bewoelkt'); clouds.classList.add('active'); emoji = '☁️'; text = 'Bewölkt'; }
+
+    $('weather-emoji').textContent = emoji;
+    $('weather-text').textContent = text;
+  } catch (e) {
+    console.error('Wetter:', e);
+    $('weather-text').textContent = 'Wetter nicht verfügbar';
+  }
+}
+
+function startLightning() {
+  const flash = () => {
+    const l = $('lightning');
+    l.classList.add('flash');
+    setTimeout(() => l.classList.remove('flash'), 500);
+  };
+  setTimeout(flash, 2000 + Math.random() * 3000);
+  lightningInterval = setInterval(() => { if (Math.random() > 0.5) flash(); }, 6000);
+}
+
+function createRain(count) {
+  const rain = $('rain'); rain.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const d = document.createElement('div');
+    d.className = 'raindrop';
+    d.style.left = Math.random() * 100 + 'vw';
+    d.style.height = (12 + Math.random() * 25) + 'px';
+    d.style.animationDuration = (0.4 + Math.random() * 0.5) + 's';
+    d.style.animationDelay = Math.random() * 2 + 's';
+    d.style.opacity = 0.3 + Math.random() * 0.6;
+    rain.appendChild(d);
+  }
+}
+
+function createSnow(count) {
+  const snow = $('snow'); snow.innerHTML = '';
+  const flakes = ['❄','❅','❆','•','*','✻'];
+  for (let i = 0; i < count; i++) {
+    const f = document.createElement('div');
+    f.className = 'snowflake';
+    f.textContent = flakes[Math.floor(Math.random() * flakes.length)];
+    f.style.left = Math.random() * 100 + 'vw';
+    f.style.fontSize = (8 + Math.random() * 18) + 'px';
+    f.style.animationDuration = (4 + Math.random() * 6) + 's';
+    f.style.animationDelay = Math.random() * 5 + 's';
+    f.style.opacity = 0.5 + Math.random() * 0.5;
+    snow.appendChild(f);
+  }
+}
+
+// ============================================================
+// COUNTDOWN
+// ============================================================
+function renderCountdown() {
+  const f = getFest(currentFestId);
+  if (!f) return;
+  $('cd-fest').innerHTML = '<span class="fest-emoji">' + f.emoji + '</span>' + escapeHtml(f.name);
+  const target = getNextOccurrence(f);
+  function tick() {
+    const diff = target - new Date();
+    if (diff <= 0) {
+      $('cd-days').textContent = '0'; $('cd-hours').textContent = '00';
+      $('cd-mins').textContent = '00'; $('cd-secs').textContent = '00';
+      return;
+    }
+    const s = Math.floor(diff/1000);
+    $('cd-days').textContent = Math.floor(s/86400);
+    $('cd-hours').textContent = String(Math.floor((s%86400)/3600)).padStart(2,'0');
+    $('cd-mins').textContent = String(Math.floor((s%3600)/60)).padStart(2,'0');
+    $('cd-secs').textContent = String(s%60).padStart(2,'0');
+  }
+  tick();
+  clearInterval(window._cdInterval);
+  window._cdInterval = setInterval(tick, 1000);
+}
+
+// ============================================================
+// ADVENTSKALENDER
+// ============================================================
+function renderAdvents() {
+  const grid = $('advents-grid'); grid.innerHTML = '';
+  const today = new Date();
+  const todayDate = today.getDate();
+  const todayMonth = today.getMonth() + 1;
+  for (let i = 1; i <= 24; i++) {
+    const door = document.createElement('div');
+    door.className = 'advents-door';
+    const opened = openedDoors.includes(i);
+    const isAvailable = (todayMonth === 12 && todayDate >= i) || todayMonth === 1;
+    if (opened) door.classList.add('opened');
+    if (!isAvailable && !opened) door.classList.add('locked');
+    door.innerHTML = '<div class="door-icon">' + (opened ? '🎁' : '🎀') + '</div><div class="door-num">' + i + '</div>';
+    door.addEventListener('click', () => {
+      if (!isAvailable && !opened) { showToast('🔒 Öffnet am ' + i + '. Dezember'); return; }
+      openDoor(i, ADVENTS_MESSAGES[i-1]);
+    });
+    grid.appendChild(door);
+  }
+  $('stat-opened').textContent = openedDoors.length;
+  $('stat-left').textContent = 24 - openedDoors.length;
+  const xmas = feste.find(f => f.id === 'xmas');
+  if (xmas) $('stat-days-xmas').textContent = daysUntil(xmas);
+}
+
+function openDoor(num, message) {
+  const alreadyOpen = openedDoors.includes(num);
+  $('modal-content').innerHTML =
+    '<div class="modal-emoji">🎁</div>' +
+    '<div class="modal-title">Türchen ' + num + '</div>' +
+    '<div class="modal-text">' + message + '</div>' +
+    '<button class="btn" id="door-close">' + (alreadyOpen ? 'Schließen' : '✨ Öffnen') + '</button>';
+  $('modal').classList.add('active');
+  $('door-close').addEventListener('click', () => {
+    if (!alreadyOpen) {
+      openedDoors.push(num); saveDoors(); renderAdvents();
+      showToast('🎁 Türchen ' + num + ' geöffnet!');
+    }
+    closeModal();
+  });
+}
+
+// ============================================================
+// REZEPTE
+// ============================================================
+function renderRezepte() {
+  const grid = $('rezepte-grid'); grid.innerHTML = '';
+  REZEPTE.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'rezept-card';
+    card.innerHTML =
+      '<span class="r-emoji">' + r.emoji + '</span>' +
+      '<div class="r-name">' + escapeHtml(r.name) + '</div>' +
+      '<div class="r-time">⏱️ ' + r.time + '</div>';
+    card.addEventListener('click', () => openRezept(r));
+    grid.appendChild(card);
+  });
+}
+
+function openRezept(r) {
+  $('modal-content').innerHTML =
+    '<div class="rezept-header">' +
+      '<span class="rh-emoji">' + r.emoji + '</span>' +
+      '<div class="rh-name">' + escapeHtml(r.name) + '</div>' +
+      '<div class="rh-meta">⏱️ ' + r.time + ' · 👥 ' + r.personen + '</div>' +
+    '</div>' +
+    '<div class="rezept-section">' +
+      '<h4>🛒 Zutaten</h4>' +
+      '<ul>' + r.zutaten.map(z => '<li>' + escapeHtml(z) + '</li>').join('') + '</ul>' +
+    '</div>' +
+    '<div class="rezept-section">' +
+      '<h4>👨‍🍳 Zubereitung</h4>' +
+      '<ol>' + r.schritte.map(s => '<li>' + escapeHtml(s) + '</li>').join('') + '</ol>' +
+    '</div>' +
+    '<button class="btn secondary" id="rezept-close">Schließen</button>';
+  $('modal').classList.add('active');
+  $('rezept-close').addEventListener('click', closeModal);
+}
+
+// ============================================================
+// KALENDER
+// ============================================================
+function renderCalendar() {
+  const months = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  $('cal-month').textContent = months[calMonth] + ' ' + calYear;
+  const grid = $('cal-days'); grid.innerHTML = '';
+  const firstDay = new Date(calYear, calMonth, 1);
+  const lastDay = new Date(calYear, calMonth + 1, 0);
+  const startWeekday = (firstDay.getDay() + 6) % 7;
+  const today = new Date(); today.setHours(0,0,0,0);
+  for (let i = 0; i < startWeekday; i++) {
+    const e = document.createElement('div');
+    e.className = 'cal-day other-month';
+    grid.appendChild(e);
+  }
+  const monthFeste = feste.filter(f => f.month === calMonth + 1);
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    const dayEl = document.createElement('div');
+    dayEl.className = 'cal-day';
+    const dateObj = new Date(calYear, calMonth, d);
+    if (dateObj.getTime() === today.getTime()) dayEl.classList.add('today');
+    const dayFeste = monthFeste.filter(f => f.day === d);
+    if (dayFeste.length > 0) {
+      dayEl.classList.add('has-event');
+      dayEl.innerHTML = '<div>' + d + '</div>';
+      dayEl.title = dayFeste.map(f => f.emoji + ' ' + f.name).join(', ');
+    } else {
+      dayEl.textContent = d;
+    }
+    dayEl.addEventListener('click', () => {
+      if (dayFeste.length > 0) showToast(dayFeste.map(f => f.emoji + ' ' + f.name).join(' · '));
+    });
+    grid.appendChild(dayEl);
+  }
+}
+
+// ============================================================
+// FESTE
+// ============================================================
+function renderFeste() {
+  const list = $('feste-list'); list.innerHTML = '';
+  const sorted = feste.slice().sort((a,b) => daysUntil(a) - daysUntil(b));
+  sorted.forEach(f => {
+    const el = document.createElement('div');
+    el.className = 'fest-item';
+    const days = daysUntil(f);
+    const isDefault = DEFAULT_FESTE.find(x => x.id === f.id);
+    el.innerHTML =
+      '<div class="fi-emoji">' + f.emoji + '</div>' +
+      '<div class="fi-info">' +
+        '<div class="fi-name">' + escapeHtml(f.name) + '</div>' +
+        '<div class="fi-date">' + festDateText(f) + '</div>' +
+      '</div>' +
+      '<div class="fi-days">' + days + '<small>' + (days === 1 ? 'Tag' : 'Tage') + '</small></div>' +
+      (isDefault ? '' : '<button class="fi-del">✕</button>');
+    el.addEventListener('click', (e) => {
+      if (e.target.closest('.fi-del')) return;
+      currentFestId = f.id;
+      localStorage.setItem('winter_current_fest', f.id);
+      renderCountdown();
+      showToast(f.emoji + ' ' + f.name + ' ausgewählt');
+    });
+    const delBtn = el.querySelector('.fi-del');
+    if (delBtn) {
+      delBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!confirm(f.name + ' löschen?')) return;
+        feste = feste.filter(x => x.id !== f.id);
+        saveFeste(); renderFeste(); renderCalendar();
+        showToast('🗑️ Gelöscht');
+      });
+    }
+    list.appendChild(el);
+  });
+}
+
+// ============================================================
+// THEME
+// ============================================================
+function setTheme(theme) {
+  document.body.setAttribute('data-theme', theme);
+  localStorage.setItem('winter_theme', theme);
+  document.querySelectorAll('.theme-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.theme === theme);
+  });
+  showToast('🎨 Theme: ' + theme);
+}
+
+// ============================================================
+// BENACHRICHTIGUNGEN
+// ============================================================
+async function requestNotif() {
+  if (!('Notification' in window)) {
+    $('notif-status').textContent = '❌ Nicht unterstützt';
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    $('notif-status').textContent = '✅ Erlaubt!';
+    showToast('🔔 Benachrichtigungen an');
+  } else {
+    $('notif-status').textContent = '❌ Abgelehnt';
+  }
+}
+
+function testNotif() {
+  if (Notification.permission === 'granted') {
+    new Notification('🎄 Pregartsdorf', { body: 'Test-Benachrichtigung!' });
+  } else {
+    showToast('⚠️ Erst erlauben');
+  }
+}
+
+// Prüft jede Minute, ob heute ein Fest ist
+function checkFestToday() {
+  if (Notification.permission !== 'granted') return;
+  const now = new Date();
+  const todayStr = now.getFullYear() + '-' + (now.getMonth()+1) + '-' + now.getDate();
+  const shownKey = 'winter_notif_shown_' + todayStr;
+  if (localStorage.getItem(shownKey)) return;
+  const today = feste.find(f => f.month === now.getMonth()+1 && f.day === now.getDate());
+  if (today) {
+    new Notification(today.emoji + ' ' + today.name + '!', {
+      body: today.msg || 'Heute ist ' + today.name + '!',
+      icon: '/icon.png'
+    });
+    localStorage.setItem(shownKey, 'true');
+  }
+}
+setInterval(checkFestToday, 60000);
+setTimeout(checkFestToday, 5000);
+
+// ============================================================
+// NEUES FEST
+// ============================================================
+function initEmojiPicker() {
+  const picker = $('emoji-picker'); picker.innerHTML = '';
+  FEST_EMOJIS.forEach(e => {
+    const btn = document.createElement('button');
+    btn.textContent = e;
+    if (e === pickedFestEmoji) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      pickedFestEmoji = e;
+      picker.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+    picker.appendChild(btn);
+  });
+}
+
+function saveNewFest() {
+  const name = $('f-name').value.trim();
+  const day = parseInt($('f-day').value);
+  const month = parseInt($('f-month').value);
+  const msg = $('f-msg').value.trim();
+  if (!name) { showToast('⚠️ Name eingeben'); return; }
+  if (!day || day < 1 || day > 31) { showToast('⚠️ Gültigen Tag eingeben'); return; }
+  feste.push({ id: uid(), emoji: pickedFestEmoji, name: name, day: day, month: month, msg: msg || (pickedFestEmoji + ' ' + name + '!') });
+  saveFeste();
+  $('f-name').value = ''; $('f-day').value = ''; $('f-msg').value = '';
+  renderFeste(); renderCalendar();
+  showToast('🎉 ' + name + ' hinzugefügt!');
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector('[data-tab="feste"]').classList.add('active');
+  $('tab-feste').classList.add('active');
+}
+
+// ============================================================
+// TABS
+// ============================================================
+document.querySelectorAll('.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    $('tab-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'advents') renderAdvents();
+    if (btn.dataset.tab === 'rezepte') renderRezepte();
+    if (btn.dataset.tab === 'calendar') renderCalendar();
+    if (btn.dataset.tab === 'feste') renderFeste();
+  });
+});
+
+// ============================================================
+// KALENDER NAVIGATION
+// ============================================================
+$('cal-prev').addEventListener('click', () => { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCalendar(); });
+$('cal-next').addEventListener('click', () => { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCalendar(); });
+
+// ============================================================
+// THEME-BUTTONS
+// ============================================================
+document.querySelectorAll('.theme-btn').forEach(btn => {
+  btn.addEventListener('click', () => setTheme(btn.dataset.theme));
+});
+
+// ============================================================
+// MODAL
+// ============================================================
+function closeModal() { $('modal').classList.remove('active'); }
+$('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(120px);background:rgba(20,15,30,.95);border:1px solid rgba(255,255,255,.15);color:#fff;padding:14px 22px;border-radius:14px;font-size:.9rem;font-weight:700;z-index:2000;transition:transform .4s;max-width:90%;text-align:center;pointer-events:none';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => { t.style.transform = 'translateX(-50%) translateY(0)'; });
+  setTimeout(() => {
+    t.style.transform = 'translateX(-50%) translateY(120px)';
+    setTimeout(() => t.remove(), 500);
+  }, 2400);
+}
+
+// ============================================================
+// BUTTONS
+// ============================================================
+$('fab').addEventListener('click', () => {
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector('[data-tab="neu"]').classList.add('active');
+  $('tab-neu').classList.add('active');
+  $('f-name').focus();
+});
+
+$('music-btn').addEventListener('click', toggleMusic);
+$('refresh').addEventListener('click', () => { loadWeather(); showToast('🔄 Aktualisiert'); });
+$('f-save').addEventListener('click', saveNewFest);
+$('notif-btn').addEventListener('click', requestNotif);
+$('notif-test').addEventListener('click', testNotif);
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  try {
+    createStars();
+    createLights();
+    initEmojiPicker();
+    renderCountdown();
+    renderAdvents();
+    renderRezepte();
+    renderCalendar();
+    renderFeste();
+    loadWeather();
+    setInterval(loadWeather, 600000);
+    const savedTheme = localStorage.getItem('winter_theme') || 'xmas';
+    setTheme(savedTheme);
+  } catch (e) {
+    console.error('Init:', e);
+  }
+  setTimeout(() => {
+    const l = document.getElementById('loading');
+    if (l) l.classList.add('hide');
+  }, 300);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
